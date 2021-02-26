@@ -2,7 +2,6 @@ import com.vdurmont.emoji.EmojiParser;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-import org.apache.commons.codec.net.QuotedPrintableCodec;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -20,6 +19,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -101,8 +101,8 @@ public class EvilShot extends TelegramLongPollingBot {
             case "/start":
                 String text= ("This bot can work in two different ways:" + '\n' +
                                         '\n' + "Scrape Images: the bot will scrape through LightShot pictures and return them all in chat." + '\n' +
-                                        '\n' + "Scrape for a Word: the bot will scrape through lightShot pictures looking for pictures that contain the desired word, please note it might take a while" +
-                                        '\n' + '\n' + "TO STOP THE BOT: type STOP");
+                                        '\n' + "Scrape for a Word: the bot will scrape through lightShot pictures looking for pictures that contain the desired word, please note it might take a while"
+                                         );
                 lunchKeyboard(message, text);
                 break;
             case "/help":
@@ -173,7 +173,11 @@ public class EvilShot extends TelegramLongPollingBot {
             Elements elements = newElement.getElementsByClass("no-click screenshot-image");
             String urlParsed = elements.attr("src");
             if(!urlParsed.isEmpty()){
-                imageUrl = new URL(urlParsed);
+                try{
+                    imageUrl = new URL(urlParsed);
+                } catch (MalformedURLException e){
+                    System.out.println("MalformedURLException " + e.toString());
+                }
                 //this prints the url of the scraped pic
                 System.out.println(urlParsed);
                 BufferedImage img = ImageIO.read(imageUrl);
@@ -219,6 +223,7 @@ public class EvilShot extends TelegramLongPollingBot {
     private void searchForWord(String wordToLookUp, String textToAnalyze, Message message, String imgUrl) throws IOException {
         if(textToAnalyze.toLowerCase().contains(wordToLookUp.toLowerCase())){
             System.out.println(textToAnalyze);
+            System.out.println("Word found");
             printImages(imgUrl, message);
             //if the pictures contain the chosen word then this will return that picture in chat
         } else {
@@ -227,7 +232,7 @@ public class EvilShot extends TelegramLongPollingBot {
     }
 
     //method used to print images in-chat on Telegram
-    private void printImages(String imageUrl, Message message) throws IOException {
+    private void printImages(String imageUrl, Message message) {
 
         SendPhoto picToSend = new SendPhoto();
         InputFile inputFile = new InputFile().setMedia(imageUrl);

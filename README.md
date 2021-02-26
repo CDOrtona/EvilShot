@@ -9,11 +9,11 @@ The program is known for having a security flaw where it's possible to gather ac
  The program counts more than two millions of uploads since 2010, the year it came out, which makes it a huge attack vector for data scraping. 
  
  ## OCR
- This bot uses Object Charcter Recognition which can be used to parse every image gathered into a stream 
+ This bot uses Object Character Recognition which can be used to parse every image gathered into a stream 
  of characters which can be later on analyzed in order to find predefined keywords.
 
 ## How To Use
-The bot works in two way: 
+The bot works in two ways: 
 
 <b>Scrape All Images</b> will return in chat every image gathered from the indexed URL above
 
